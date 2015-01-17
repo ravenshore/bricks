@@ -25,7 +25,13 @@ let BorderCategory : UInt32 = 0x1 << 4 // 00000000000000000000000000010000
 var ball: SKSpriteNode!
 var borderBody: SKPhysicsBody!
 var score: Int = 0
+var level: Int = 1
 var scoreLabel: SKLabelNode!
+var levelLabel: SKLabelNode!
+var mass: CGFloat = 0.55
+var multiplier: CGFloat = 1
+var maxV: CGFloat = 500
+var numberOfBlocks: Int = 3
 
 
 var backgroundMusicPlayer: AVAudioPlayer!
@@ -36,9 +42,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMoveToView(view: SKView) {
         super.didMoveToView(view)
         
+        
         playMusic("arcade.wav", loops: -1)
          scoreLabel = childNodeWithName("scoreLabel") as SKLabelNode!
-        
+         levelLabel = childNodeWithName("levelLabel") as  SKLabelNode!
+        levelLabel.text = ("Level: \(level)")
         // 1. Create a physics body that borders the screen
         borderBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
         // 2. Set the friction of that physicsBody to 0
@@ -56,6 +64,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         ball = childNodeWithName(BallCategoryName) as SKSpriteNode
         ball.physicsBody!.applyImpulse(CGVectorMake(0, 10))
+        ball.physicsBody!.mass = mass
         
         let paddle = childNodeWithName(PaddleCategoryName) as SKSpriteNode!
         
@@ -72,7 +81,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         // 1. Store some useful constants
-        let numberOfBlocks = 9
+//        numberOfBlocks = 9
         
         let blockWidth = SKSpriteNode(imageNamed: "brick1.png").size.width
         let blockHeight = SKSpriteNode(imageNamed: "brick1.png").size.height
@@ -175,6 +184,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //TODO: Replace the log statement with display of Game Over Scene
             println("hit bottom")
              score = 0
+             maxV = 500
+            level = 1
+            numberOfBlocks = 3
+            levelLabel.text = ("Level: \(level)")
              self.removeAllChildren();
             if let mainView = view {
                
@@ -206,14 +219,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
 //            Check if the game has been won
             if isGameWon() {
-
+                
                 self.removeAllChildren()
+                maxV = maxV + 200
+                level++
+                levelLabel.text = ("Level: \(level)")
+                numberOfBlocks = numberOfBlocks + 2
                
                 if let mainView = view {
                     
                     
                     let gameOverScene = GameOverScene.unarchiveFromFile("GameOverScene") as GameOverScene!
                     gameOverScene.gameWon = true
+                    
                     mainView.presentScene(gameOverScene)
                 
                 }
@@ -235,10 +253,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     println("Impulse power, Mr Sulu")
                     if currentVector.dx == 0 { // only the top
                         firstBody.applyImpulse(CGVector(dx: 0, dy: -1))
-                    } else if currentVector.dy == 0 { // dx is -1 on the right wall, 1 on the left.
+                    } else if currentVector.dy < 2 { // dx is -1 on the right wall, 1 on the left.
                         let dx = currentVector.dx
                         println("Applying impulse with dx = \(dx)")
-                        firstBody.applyImpulse(CGVector(dx: dx, dy: 0))
+                        firstBody.applyImpulse(CGVector(dx: dx + 5, dy: 15))
                     }
                 }
             
@@ -258,11 +276,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if firstBody.categoryBitMask == BallCategory && secondBody.categoryBitMask == PaddleCategory {
             let ball = self.childNodeWithName(BallCategoryName) as SKSpriteNode!
             let paddle = self.childNodeWithName(PaddleCategoryName) as SKSpriteNode!
-            let relativePosition = ((ball.position.x - paddle.position.x) / paddle.size.width/2)
-            let multiplier: CGFloat = 15.0
+            let relativePosition = ((ball.position.x - paddle.position.x) )
+            println("Relative position is: \(relativePosition)")
+            println("Multiplier is: \(multiplier)")
             let xImpulse = relativePosition * multiplier
             println("xImpulse is: \(xImpulse)")
-            let impulseVector = CGVector(dx: xImpulse, dy: CGFloat(0))
+            let impulseVector = CGVector(dx: xImpulse, dy: CGFloat(10))
             ball.physicsBody!.applyImpulse(impulseVector)
         }
         
@@ -281,7 +300,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let ball = self.childNodeWithName(BallCategoryName) as SKSpriteNode!
         scoreLabel.text = ("Score: \(score)")
         
-        let maxSpeed: CGFloat = 1000.0
+        let maxSpeed: CGFloat = maxV
         let speed = sqrt(ball.physicsBody!.velocity.dx * ball.physicsBody!.velocity.dx + ball.physicsBody!.velocity.dy * ball.physicsBody!.velocity.dy)
         
         if speed > maxSpeed {
