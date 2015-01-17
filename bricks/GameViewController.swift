@@ -20,6 +20,7 @@ extension SKNode {
             archiver.finishDecoding()
             return scene
         } else {
+            println("no scene to return")
             return nil
         }
     }
@@ -43,7 +44,11 @@ class GameViewController: UIViewController {
             scene.scaleMode = .AspectFill
             
             skView.presentScene(scene)
+        } else {
+            
+        println("no game scene")
         }
+        
     }
 
     override func shouldAutorotate() -> Bool {

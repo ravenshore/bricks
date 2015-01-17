@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		50051D471A69DAFC005C2189 /* magic.sks in Resources */ = {isa = PBXBuildFile; fileRef = 50051D461A69DAFC005C2189 /* magic.sks */; };
+		50051D491A69DB33005C2189 /* spark.sks in Resources */ = {isa = PBXBuildFile; fileRef = 50051D481A69DB33005C2189 /* spark.sks */; };
+		50051D4B1A69DD36005C2189 /* jump.wav in Resources */ = {isa = PBXBuildFile; fileRef = 50051D4A1A69DD36005C2189 /* jump.wav */; };
+		50051D4D1A69E1E4005C2189 /* arcade.wav in Resources */ = {isa = PBXBuildFile; fileRef = 50051D4C1A69E1E4005C2189 /* arcade.wav */; };
 		50056B0A1A660D15006CE8DC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50056B091A660D15006CE8DC /* AppDelegate.swift */; };
 		50056B0C1A660D15006CE8DC /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 50056B0B1A660D15006CE8DC /* GameScene.sks */; };
 		50056B0E1A660D15006CE8DC /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50056B0D1A660D15006CE8DC /* GameScene.swift */; };
@@ -27,6 +31,10 @@
 		509816021A675348001CAAED /* brick.png in Resources */ = {isa = PBXBuildFile; fileRef = 509816011A675348001CAAED /* brick.png */; };
 		509816051A678E41001CAAED /* fire.sks in Resources */ = {isa = PBXBuildFile; fileRef = 509816031A678E41001CAAED /* fire.sks */; };
 		509816061A678E41001CAAED /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 509816041A678E41001CAAED /* spark.png */; };
+		50B3355D1A68CC4E009A445D /* bokeh.sks in Resources */ = {isa = PBXBuildFile; fileRef = 50B3355B1A68CC4E009A445D /* bokeh.sks */; };
+		50B3355E1A68CC4E009A445D /* bokeh.png in Resources */ = {isa = PBXBuildFile; fileRef = 50B3355C1A68CC4E009A445D /* bokeh.png */; };
+		50D7C69F1A69CAC900D65A81 /* brick1.png in Resources */ = {isa = PBXBuildFile; fileRef = 50D7C69E1A69CAC900D65A81 /* brick1.png */; };
+		50D7C6A11A69D6E700D65A81 /* ball3.png in Resources */ = {isa = PBXBuildFile; fileRef = 50D7C6A01A69D6E700D65A81 /* ball3.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +48,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		50051D461A69DAFC005C2189 /* magic.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = magic.sks; sourceTree = "<group>"; };
+		50051D481A69DB33005C2189 /* spark.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = spark.sks; sourceTree = "<group>"; };
+		50051D4A1A69DD36005C2189 /* jump.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = jump.wav; sourceTree = "<group>"; };
+		50051D4C1A69E1E4005C2189 /* arcade.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = arcade.wav; sourceTree = "<group>"; };
 		50056B041A660D15006CE8DC /* bricks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bricks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50056B081A660D15006CE8DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50056B091A660D15006CE8DC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -64,6 +76,10 @@
 		509816011A675348001CAAED /* brick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brick.png; sourceTree = "<group>"; };
 		509816031A678E41001CAAED /* fire.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = fire.sks; sourceTree = "<group>"; };
 		509816041A678E41001CAAED /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
+		50B3355B1A68CC4E009A445D /* bokeh.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = bokeh.sks; sourceTree = "<group>"; };
+		50B3355C1A68CC4E009A445D /* bokeh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bokeh.png; sourceTree = "<group>"; };
+		50D7C69E1A69CAC900D65A81 /* brick1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brick1.png; sourceTree = "<group>"; };
+		50D7C6A01A69D6E700D65A81 /* ball3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ball3.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,16 +122,24 @@
 			isa = PBXGroup;
 			children = (
 				50056B091A660D15006CE8DC /* AppDelegate.swift */,
-				50056B0B1A660D15006CE8DC /* GameScene.sks */,
 				5078671E1A6743DF009A6DD9 /* ball2.png */,
 				5078671C1A6742AE009A6DD9 /* paddle2.png */,
 				509816011A675348001CAAED /* brick.png */,
 				509816031A678E41001CAAED /* fire.sks */,
 				509816041A678E41001CAAED /* spark.png */,
+				50B3355B1A68CC4E009A445D /* bokeh.sks */,
+				50051D481A69DB33005C2189 /* spark.sks */,
+				50B3355C1A68CC4E009A445D /* bokeh.png */,
+				50051D4A1A69DD36005C2189 /* jump.wav */,
+				50051D461A69DAFC005C2189 /* magic.sks */,
+				50056B0B1A660D15006CE8DC /* GameScene.sks */,
+				50051D4C1A69E1E4005C2189 /* arcade.wav */,
 				50056B0D1A660D15006CE8DC /* GameScene.swift */,
 				50056B371A6620D0006CE8DC /* GameOverScene.sks */,
+				50D7C6A01A69D6E700D65A81 /* ball3.png */,
 				50056B391A662201006CE8DC /* GameOverScene.swift */,
 				50056B2D1A66100F006CE8DC /* ball.png */,
+				50D7C69E1A69CAC900D65A81 /* brick1.png */,
 				50056B2E1A66100F006CE8DC /* bg.png */,
 				50056B2F1A66100F006CE8DC /* block.png */,
 				50056B351A661049006CE8DC /* water.png */,
@@ -236,20 +260,28 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50051D4B1A69DD36005C2189 /* jump.wav in Resources */,
 				50056B181A660D15006CE8DC /* LaunchScreen.xib in Resources */,
+				50B3355D1A68CC4E009A445D /* bokeh.sks in Resources */,
 				50056B331A66100F006CE8DC /* block.png in Resources */,
 				5078671D1A6742AE009A6DD9 /* paddle2.png in Resources */,
 				509816051A678E41001CAAED /* fire.sks in Resources */,
+				50051D471A69DAFC005C2189 /* magic.sks in Resources */,
 				509816021A675348001CAAED /* brick.png in Resources */,
+				50051D491A69DB33005C2189 /* spark.sks in Resources */,
 				50056B361A661049006CE8DC /* water.png in Resources */,
 				50056B311A66100F006CE8DC /* ball.png in Resources */,
 				50056B321A66100F006CE8DC /* bg.png in Resources */,
+				50B3355E1A68CC4E009A445D /* bokeh.png in Resources */,
 				50056B151A660D15006CE8DC /* Images.xcassets in Resources */,
+				50D7C6A11A69D6E700D65A81 /* ball3.png in Resources */,
 				50056B0C1A660D15006CE8DC /* GameScene.sks in Resources */,
 				509816061A678E41001CAAED /* spark.png in Resources */,
 				50056B131A660D15006CE8DC /* Main.storyboard in Resources */,
 				5078671F1A6743DF009A6DD9 /* ball2.png in Resources */,
+				50D7C69F1A69CAC900D65A81 /* brick1.png in Resources */,
 				50056B381A6620D0006CE8DC /* GameOverScene.sks in Resources */,
+				50051D4D1A69E1E4005C2189 /* arcade.wav in Resources */,
 				50056B341A66100F006CE8DC /* paddle.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

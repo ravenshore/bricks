@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>245100FF-D370-42ED-8CBD-82177CB073B7</string>
+	<key>IDESourceControlProjectName</key>
+	<string>bricks</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>1F02C283C709D0E26BB8819F73782C919C6A1AE3</key>
+		<string>https://github.com/ravenshore/bricks.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>bricks.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>1F02C283C709D0E26BB8819F73782C919C6A1AE3</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/ravenshore/bricks.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>1F02C283C709D0E26BB8819F73782C919C6A1AE3</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1F02C283C709D0E26BB8819F73782C919C6A1AE3</string>
+			<key>IDESourceControlWCCName</key>
+			<string>bricks</string>
+		</dict>
+	</array>
+</dict>
+</plist>

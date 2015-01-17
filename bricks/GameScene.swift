@@ -7,6 +7,7 @@
 //
 
 import SpriteKit
+import AVFoundation
 
 let BallCategoryName = "ball"
 let PaddleCategoryName = "paddle"
@@ -22,21 +23,30 @@ let PaddleCategory : UInt32 = 0x1 << 3 // 00000000000000000000000000001000
 let BorderCategory : UInt32 = 0x1 << 4 // 00000000000000000000000000010000
 
 var ball: SKSpriteNode!
+var borderBody: SKPhysicsBody!
+var score: Int = 0
+var scoreLabel: SKLabelNode!
+
+
+var backgroundMusicPlayer: AVAudioPlayer!
+var audioPlayer: AVAudioPlayer!
+
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMoveToView(view: SKView) {
         super.didMoveToView(view)
         
-        
+        playMusic("arcade.wav", loops: -1)
+         scoreLabel = childNodeWithName("scoreLabel") as SKLabelNode!
         
         // 1. Create a physics body that borders the screen
-        let borderBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
+        borderBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
         // 2. Set the friction of that physicsBody to 0
         borderBody.friction = 0
         // 3. Set physicsBody of scene to borderBody
         self.physicsBody = borderBody
         // 4. Create the Bottom
-        let bottomRect = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, 1)
+        let bottomRect = CGRectMake(frame.origin.x, frame.origin.y + 5 , frame.size.width, 1)
         let bottom = SKNode()
         bottom.physicsBody = SKPhysicsBody(edgeLoopFromRect: bottomRect)
         addChild(bottom)
@@ -56,16 +66,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         borderBody.categoryBitMask = BorderCategory
-        ball.physicsBody!.contactTestBitMask = BottomCategory | BlockCategory | BorderCategory | PaddleCategory
+        ball.physicsBody!.contactTestBitMask = BottomCategory | BlockCategory | PaddleCategory |  BorderCategory
         
         println(ball.anchorPoint)
         
         
         // 1. Store some useful constants
-        let numberOfBlocks = 4
+        let numberOfBlocks = 9
         
-        let blockWidth = SKSpriteNode(imageNamed: "brick.png").size.width
-        let blockHeight = SKSpriteNode(imageNamed: "brick.png").size.height
+        let blockWidth = SKSpriteNode(imageNamed: "brick1.png").size.width
+        let blockHeight = SKSpriteNode(imageNamed: "brick1.png").size.height
         
         let totalBlocksWidth = blockWidth * CGFloat(numberOfBlocks)
         
@@ -77,9 +87,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let yOffset = blockHeight + 5
         
         // 3. Create the blocks and add them to the scene
-        for i in 0..<numberOfBlocks {
-            let block = SKSpriteNode(imageNamed: "brick.png")
-            block.position = CGPointMake(xOffset + CGFloat(CGFloat(i) + 0.5)*blockWidth + CGFloat(i-1)*padding, CGRectGetHeight(frame) * 0.8)
+        for i in 0..<numberOfBlocks + 1{
+            let block = SKSpriteNode(imageNamed: "brick1.png")
+            block.position = CGPointMake(xOffset + CGFloat(CGFloat(i))*blockWidth + CGFloat(i-1)*padding, CGRectGetHeight(frame) * 0.8)
             block.physicsBody = SKPhysicsBody(rectangleOfSize: block.frame.size)
             block.physicsBody!.allowsRotation = false
             block.physicsBody!.friction = 0.0
@@ -88,10 +98,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             block.physicsBody!.categoryBitMask = BlockCategory
             block.physicsBody!.dynamic = false
             addChild(block)
+        }
+        for i in 0..<numberOfBlocks {
             
-            let block1 = SKSpriteNode(imageNamed: "brick.png")
-            block1.position = CGPointMake(xOffset + CGFloat(CGFloat(i) + 1)*blockWidth + CGFloat(i-1)*padding, CGRectGetHeight(frame) * 0.8 + yOffset)
-            block1.physicsBody = SKPhysicsBody(rectangleOfSize: block.frame.size)
+            let block1 = SKSpriteNode(imageNamed: "brick1.png")
+            block1.position = CGPointMake(xOffset + CGFloat(CGFloat(i))*blockWidth + CGFloat(i-1)*padding + blockWidth * 0.5, CGRectGetHeight(frame) * 0.8 + yOffset)
+            block1.physicsBody = SKPhysicsBody(rectangleOfSize: block1.frame.size)
             block1.physicsBody!.allowsRotation = false
             block1.physicsBody!.friction = 0.0
             block1.physicsBody!.affectedByGravity = false
@@ -162,18 +174,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if firstBody.categoryBitMask == BallCategory && secondBody.categoryBitMask == BottomCategory {
             //TODO: Replace the log statement with display of Game Over Scene
             println("hit bottom")
+             score = 0
+             self.removeAllChildren();
             if let mainView = view {
+               
                 println("hit bottom1")
                 let gameOverScene = GameOverScene.unarchiveFromFile("GameOverScene") as GameOverScene!
                 gameOverScene.gameWon = false
+                
                 mainView.presentScene(gameOverScene)
                 println("hit bottom2")
+                
             }
         }
         
         if firstBody.categoryBitMask == BallCategory && secondBody.categoryBitMask == BlockCategory {
             secondBody.node!.removeFromParent()
-            
+            score++
+            playAudio("jump.wav", loops: 0)
             println("hit block")
             let sparkEmmiter = SKEmitterNode(fileNamed: "fire.sks")
             sparkEmmiter.position = ball.position
@@ -182,15 +200,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             sparkEmmiter.targetNode = self
             sparkEmmiter.particleLifetime = 1
             
+            
             self.addChild(sparkEmmiter)
-            //TODO: check if the game has been won
+            
+            
+//            Check if the game has been won
             if isGameWon() {
+
+                self.removeAllChildren()
+               
                 if let mainView = view {
+                    
+                    
                     let gameOverScene = GameOverScene.unarchiveFromFile("GameOverScene") as GameOverScene!
                     gameOverScene.gameWon = true
                     mainView.presentScene(gameOverScene)
+                
                 }
             }
+            
+           
         }
         
         
@@ -212,6 +241,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         firstBody.applyImpulse(CGVector(dx: dx, dy: 0))
                     }
                 }
+            
+            let sparkEmmiter = SKEmitterNode(fileNamed: "spark.sks")
+            sparkEmmiter.position = ball.position
+            sparkEmmiter.name = "sparkEmmitter"
+            sparkEmmiter.zPosition = 1
+            sparkEmmiter.targetNode = self
+            sparkEmmiter.particleLifetime = 1
+            
+            
+            self.addChild(sparkEmmiter)
+            
             
             }
         
@@ -239,6 +279,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(currentTime: NSTimeInterval) {
         let ball = self.childNodeWithName(BallCategoryName) as SKSpriteNode!
+        scoreLabel.text = ("Score: \(score)")
         
         let maxSpeed: CGFloat = 1000.0
         let speed = sqrt(ball.physicsBody!.velocity.dx * ball.physicsBody!.velocity.dx + ball.physicsBody!.velocity.dy * ball.physicsBody!.velocity.dy)
@@ -260,6 +301,51 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
     }
+    
+    func playAudio(filename: String, loops: Int) {
+        let url = NSBundle.mainBundle().URLForResource(
+            filename, withExtension: nil)
+        if (url == nil) {
+            println("Could not find file: \(filename)")
+            return
+        }
+        
+        var error: NSError? = nil
+        
+        audioPlayer =
+            AVAudioPlayer(contentsOfURL: url, error: &error)
+        if audioPlayer == nil {
+            println("Could not create audio player: \(error!)")
+            return
+        }
+        
+        audioPlayer.numberOfLoops = loops
+        audioPlayer.prepareToPlay()
+        audioPlayer.play()
+    }
+    
+    func playMusic(filename: String, loops: Int) {
+        let url = NSBundle.mainBundle().URLForResource(
+            filename, withExtension: nil)
+        if (url == nil) {
+            println("Could not find file: \(filename)")
+            return
+        }
+        
+        var error: NSError? = nil
+        
+        backgroundMusicPlayer =
+            AVAudioPlayer(contentsOfURL: url, error: &error)
+        if backgroundMusicPlayer == nil {
+            println("Could not create audio player: \(error!)")
+            return
+        }
+        
+        backgroundMusicPlayer.numberOfLoops = loops
+        backgroundMusicPlayer.prepareToPlay()
+        backgroundMusicPlayer.play()
+    }
+
     
     
 }
