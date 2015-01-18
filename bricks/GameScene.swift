@@ -23,6 +23,7 @@ let PaddleCategory : UInt32 = 0x1 << 3 // 00000000000000000000000000001000
 let BorderCategory : UInt32 = 0x1 << 4 // 00000000000000000000000000010000
 
 var ball: SKSpriteNode!
+var bg: SKSpriteNode!
 var borderBody: SKPhysicsBody!
 var score: Int = 0
 var level: Int = 1
@@ -35,6 +36,7 @@ var numberOfBlocks: Int = 3
 var paddle: SKSpriteNode!
 var paddleWidth: CGFloat = 200
 var ppl: Int = 1
+var gameOver = false
 
 var backgroundMusicPlayer: AVAudioPlayer!
 var audioPlayer: AVAudioPlayer!
@@ -44,16 +46,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMoveToView(view: SKView) {
         super.didMoveToView(view)
         
-        paddle = SKSpriteNode(imageNamed: "paddleN\(level).png")
-        paddle.position = CGPoint(x: CGRectGetWidth(frame) / 2 , y: 50)
-        paddle.physicsBody = SKPhysicsBody(rectangleOfSize: paddle.frame.size)
-        paddle.physicsBody!.allowsRotation = false
-        paddle.physicsBody!.friction = 0.0
-        paddle.physicsBody!.affectedByGravity = false
-        paddle.name = PaddleCategoryName
-        paddle.physicsBody!.categoryBitMask = PaddleCategory
-        paddle.physicsBody!.dynamic = false
-        addChild(paddle)
+        generatePaddle()
+        generateBackground()
+        gameOver = false
         
         playMusic("arcade.wav", loops: -1)
          scoreLabel = childNodeWithName("scoreLabel") as SKLabelNode!
@@ -195,6 +190,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if firstBody.categoryBitMask == BallCategory && secondBody.categoryBitMask == BottomCategory {
             //TODO: Replace the log statement with display of Game Over Scene
             println("hit bottom")
+            gameOver = true
              score = 0
              maxV = 500
             level = 1
@@ -304,7 +300,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             }
         
-        if firstBody.categoryBitMask == BallCategory && secondBody.categoryBitMask == PaddleCategory {
+        if firstBody.categoryBitMask == BallCategory && secondBody.categoryBitMask == PaddleCategory && gameOver == false {
             let ball = self.childNodeWithName(BallCategoryName) as SKSpriteNode!
             let paddle = self.childNodeWithName(PaddleCategoryName) as SKSpriteNode!
             let relativePosition = ((ball.position.x - paddle.position.x))
@@ -398,10 +394,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         backgroundMusicPlayer.play()
     }
 
-    func changePaddle() {
+    func generatePaddle() {
         
         
-        let paddle = SKSpriteNode(imageNamed: "paddleN4.png")
+        paddle = SKSpriteNode(imageNamed: "paddleN\(level).png")
         paddle.position = CGPoint(x: CGRectGetWidth(frame) / 2 , y: 50)
         paddle.physicsBody = SKPhysicsBody(rectangleOfSize: paddle.frame.size)
         paddle.physicsBody!.allowsRotation = false
@@ -411,6 +407,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         paddle.physicsBody!.categoryBitMask = PaddleCategory
         paddle.physicsBody!.dynamic = false
         addChild(paddle)
+        
+    }
+    
+    func generateBackground() {
+        
+        bg = SKSpriteNode(imageNamed: "bg\(level).png")
+        bg.anchorPoint = CGPoint(x: 0, y: 0)
+        let frameW = self.frame.size.width
+        let frameH = self.frame.size.height
+        println(frameW, frameH)
+        addChild(bg)
+        bg.size.width = frameW
+        bg.size.height = frameH
+        bg.zPosition = -10
         
     }
     
