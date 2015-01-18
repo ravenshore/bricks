@@ -32,7 +32,9 @@ var mass: CGFloat = 0.55
 var multiplier: CGFloat = 1
 var maxV: CGFloat = 500
 var numberOfBlocks: Int = 3
-
+var paddle: SKSpriteNode!
+var paddleWidth: CGFloat = 200
+var ppl: Int = 1
 
 var backgroundMusicPlayer: AVAudioPlayer!
 var audioPlayer: AVAudioPlayer!
@@ -42,6 +44,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMoveToView(view: SKView) {
         super.didMoveToView(view)
         
+        paddle = SKSpriteNode(imageNamed: "paddleN\(level).png")
+        paddle.position = CGPoint(x: CGRectGetWidth(frame) / 2 , y: 50)
+        paddle.physicsBody = SKPhysicsBody(rectangleOfSize: paddle.frame.size)
+        paddle.physicsBody!.allowsRotation = false
+        paddle.physicsBody!.friction = 0.0
+        paddle.physicsBody!.affectedByGravity = false
+        paddle.name = PaddleCategoryName
+        paddle.physicsBody!.categoryBitMask = PaddleCategory
+        paddle.physicsBody!.dynamic = false
+        addChild(paddle)
         
         playMusic("arcade.wav", loops: -1)
          scoreLabel = childNodeWithName("scoreLabel") as SKLabelNode!
@@ -66,7 +78,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody!.applyImpulse(CGVectorMake(0, 10))
         ball.physicsBody!.mass = mass
         
-        let paddle = childNodeWithName(PaddleCategoryName) as SKSpriteNode!
+        
         
         bottom.physicsBody!.categoryBitMask = BottomCategory
         ball.physicsBody!.categoryBitMask = BallCategory
@@ -188,6 +200,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             level = 1
             numberOfBlocks = 3
             levelLabel.text = ("Level: \(level)")
+            ppl = 1
              self.removeAllChildren();
             if let mainView = view {
                
@@ -202,19 +215,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if firstBody.categoryBitMask == BallCategory && secondBody.categoryBitMask == BlockCategory {
-            secondBody.node!.removeFromParent()
-            score++
+            
+            let secondBodyNode = contact.bodyA.node as SKSpriteNode
             playAudio("jump.wav", loops: 0)
             println("hit block")
-            let sparkEmmiter = SKEmitterNode(fileNamed: "fire.sks")
-            sparkEmmiter.position = ball.position
-            sparkEmmiter.name = "sparkEmmitter"
+            let sparkEmmiter = SKEmitterNode(fileNamed: "brickFx.sks")
+            sparkEmmiter.position = secondBodyNode.position
+            sparkEmmiter.name = "brickFx"
             sparkEmmiter.zPosition = 1
             sparkEmmiter.targetNode = self
             sparkEmmiter.particleLifetime = 1
-            
-            
             self.addChild(sparkEmmiter)
+            
+            secondBody.node!.removeFromParent()
+            score = score + ppl
+            
             
             
 //            Check if the game has been won
@@ -225,6 +240,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 level++
                 levelLabel.text = ("Level: \(level)")
                 numberOfBlocks = numberOfBlocks + 2
+                
+                ppl++
                
                 if let mainView = view {
                     
@@ -252,20 +269,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if currentImpact <= 5.0 && currentImpact > 0 {
                     println("Impulse power, Mr Sulu")
                     if currentVector.dx == 0 { // only the top
-                        firstBody.applyImpulse(CGVector(dx: 0, dy: -1))
-                    } else if currentVector.dy < 2 { // dx is -1 on the right wall, 1 on the left.
+                        firstBody.applyImpulse(CGVector(dx: 2, dy: -1))
+                    }
+                    if currentVector.dy == 0 { // dx is -1 on the right wall, 1 on the left.
                         let dx = currentVector.dx
                         println("Applying impulse with dx = \(dx)")
-                        firstBody.applyImpulse(CGVector(dx: dx + 5, dy: 15))
+                        firstBody.applyImpulse(CGVector(dx: dx + 5, dy: -1))
                     }
                 }
+            if currentVector.dy == 0 { // bouncing left and right
+                
+                let dy = currentVector.dy
+                let dx = currentVector.dx
+                println("DX is : \(dx)")
+                if ball.position.y < 300 { // if ball is in bottom half of the screen
+                println("Applying impulse with dy = \(dy) + 25")
+                firstBody.applyImpulse(CGVector(dx: 0, dy: 25))
+                } else { // if ball is in the top half of the screen
+                    println("Applying impulse with dy = \(dy) -25")
+                    firstBody.applyImpulse(CGVector(dx: 0, dy: -25))
+                }
+            }
             
             let sparkEmmiter = SKEmitterNode(fileNamed: "spark.sks")
             sparkEmmiter.position = ball.position
             sparkEmmiter.name = "sparkEmmitter"
             sparkEmmiter.zPosition = 1
             sparkEmmiter.targetNode = self
-            sparkEmmiter.particleLifetime = 1
+            sparkEmmiter.particleLifetime = 0.5
             
             
             self.addChild(sparkEmmiter)
@@ -276,13 +307,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if firstBody.categoryBitMask == BallCategory && secondBody.categoryBitMask == PaddleCategory {
             let ball = self.childNodeWithName(BallCategoryName) as SKSpriteNode!
             let paddle = self.childNodeWithName(PaddleCategoryName) as SKSpriteNode!
-            let relativePosition = ((ball.position.x - paddle.position.x) )
+            let relativePosition = ((ball.position.x - paddle.position.x))
             println("Relative position is: \(relativePosition)")
             println("Multiplier is: \(multiplier)")
             let xImpulse = relativePosition * multiplier
             println("xImpulse is: \(xImpulse)")
             let impulseVector = CGVector(dx: xImpulse, dy: CGFloat(10))
             ball.physicsBody!.applyImpulse(impulseVector)
+            
         }
         
     }
@@ -308,6 +340,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else {
             ball.physicsBody!.linearDamping = 0.0
+            
         }
     }
     
@@ -365,6 +398,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         backgroundMusicPlayer.play()
     }
 
-    
+    func changePaddle() {
+        
+        
+        let paddle = SKSpriteNode(imageNamed: "paddleN4.png")
+        paddle.position = CGPoint(x: CGRectGetWidth(frame) / 2 , y: 50)
+        paddle.physicsBody = SKPhysicsBody(rectangleOfSize: paddle.frame.size)
+        paddle.physicsBody!.allowsRotation = false
+        paddle.physicsBody!.friction = 0.0
+        paddle.physicsBody!.affectedByGravity = false
+        paddle.name = PaddleCategoryName
+        paddle.physicsBody!.categoryBitMask = PaddleCategory
+        paddle.physicsBody!.dynamic = false
+        addChild(paddle)
+        
+    }
     
 }

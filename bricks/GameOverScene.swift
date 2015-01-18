@@ -15,7 +15,7 @@ class GameOverScene: SKScene {
         // 1.
         didSet {
             let gameOverLabel = childNodeWithName(GameOverLabelCategoryName) as SKLabelNode!
-        gameOverLabel.text = gameWon ? "Game Won" : "Game Over"
+        gameOverLabel.text = gameWon ? "Game Won \n Tap for the Next Level!" : "You too weak \n Tap to Try Again!"
             
         }
     }
