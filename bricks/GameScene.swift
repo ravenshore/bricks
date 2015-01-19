@@ -29,6 +29,7 @@ var score: Int = 0
 var level: Int = 1
 var scoreLabel: SKLabelNode!
 var levelLabel: SKLabelNode!
+var highScoreLabel: SKLabelNode!
 var mass: CGFloat = 0.55
 var multiplier: CGFloat = 1
 var maxV: CGFloat = 500
@@ -38,14 +39,31 @@ var paddleWidth: CGFloat = 200
 var ppl: Int = 1
 var gameOver = false
 
+
 var backgroundMusicPlayer: AVAudioPlayer!
 var audioPlayer: AVAudioPlayer!
+
+func documentsDirectory() -> String {
+    let documentsFolderPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
+    return documentsFolderPath
+}
+// Get path for a file in the directory
+
+func fileInDocumentsDirectory(filename: String) -> String {
+    return documentsDirectory().stringByAppendingPathComponent(filename)
+}
+
+let scoreSavePath = fileInDocumentsDirectory("highScore.txt")
+
 
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMoveToView(view: SKView) {
         super.didMoveToView(view)
         
+        
+        highScoreLabel = childNodeWithName("highScoreLabel") as SKLabelNode!
+        loadHighScore()
         generatePaddle()
         generateBackground()
         gameOver = false
@@ -53,6 +71,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         playMusic("arcade.wav", loops: -1)
          scoreLabel = childNodeWithName("scoreLabel") as SKLabelNode!
          levelLabel = childNodeWithName("levelLabel") as  SKLabelNode!
+        
+        
         levelLabel.text = ("Level: \(level)")
         // 1. Create a physics body that borders the screen
         borderBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
@@ -197,6 +217,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             numberOfBlocks = 3
             levelLabel.text = ("Level: \(level)")
             ppl = 1
+            saveHighScore()
              self.removeAllChildren();
             if let mainView = view {
                
@@ -279,8 +300,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 let dx = currentVector.dx
                 println("DX is : \(dx)")
                 if ball.position.y < 300 { // if ball is in bottom half of the screen
-                println("Applying impulse with dy = \(dy) + 25")
-                firstBody.applyImpulse(CGVector(dx: 0, dy: 25))
+                println("Applying impulse with dy = \(dy) + 20")
+                firstBody.applyImpulse(CGVector(dx: 0, dy: 20))
                 } else { // if ball is in the top half of the screen
                     println("Applying impulse with dy = \(dy) -25")
                     firstBody.applyImpulse(CGVector(dx: 0, dy: -25))
@@ -424,4 +445,50 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
+    func saveText(text: String, path: String) -> Bool {
+        var error: NSError? = nil
+        let status = text.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding, error: &error)
+        if !status { //status == false {
+            println("Error saving file at path: \(path) with error: \(error?.localizedDescription)")
+        }
+        return status
+    }
+    
+    
+    
+    
+    
+    // Load text
+    
+    func loadTextFromPath(path: String) -> String? {
+        var error: NSError? = nil
+        let text = String(contentsOfFile: path, encoding: NSUTF8StringEncoding, error: &error)
+        if text == nil {
+            println("Error loading text from path: \(path) error: \(error?.localizedDescription)")
+        }
+        return text
+    }
+    
+    
+    func loadHighScore() {
+        
+        if let savedHighScore = loadTextFromPath(scoreSavePath) {
+        highScoreLabel.text = savedHighScore
+            println("\(savedHighScore)")
+        }
+        
+    }
+    
+    func saveHighScore() {
+       
+        let currentScore = scoreLabel.text
+        if let savedHighScore = loadTextFromPath(scoreSavePath) {
+            if currentScore > savedHighScore {
+        saveText(scoreLabel.text, path: scoreSavePath )
+            }
+        } else {
+            
+            saveText(scoreLabel.text, path: scoreSavePath )
+        }
+    }
 }
