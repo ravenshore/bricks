@@ -12,15 +12,17 @@ import AVFoundation
 let BallCategoryName = "ball"
 let PaddleCategoryName = "paddle"
 let BlockCategoryName = "block"
+let BlockCategoryRedName = "blockRed"
 let BlockNodeCategoryName = "blockNode"
 var isFingerOnPaddle = false
 
 // creating the bit masks
-let BallCategory   : UInt32 = 0x1 << 0 // 00000000000000000000000000000001
-let BottomCategory : UInt32 = 0x1 << 1 // 00000000000000000000000000000010
-let BlockCategory  : UInt32 = 0x1 << 2 // 00000000000000000000000000000100
-let PaddleCategory : UInt32 = 0x1 << 3 // 00000000000000000000000000001000
-let BorderCategory : UInt32 = 0x1 << 4 // 00000000000000000000000000010000
+let BallCategory   : UInt32 = 0x1 << 0    // 00000000000000000000000000000001
+let BottomCategory : UInt32 = 0x1 << 1    // 00000000000000000000000000000010
+let BlockCategory  : UInt32 = 0x1 << 2    // 00000000000000000000000000000100
+let PaddleCategory : UInt32 = 0x1 << 3    // 00000000000000000000000000001000
+let BorderCategory : UInt32 = 0x1 << 4    // 00000000000000000000000000010000
+let BlockCategoryRed  : UInt32 = 0x1 << 5 // 00000000000000000000000000100000
 
 var ball: SKSpriteNode!
 var bg: SKSpriteNode!
@@ -33,11 +35,14 @@ var highScoreLabel: SKLabelNode!
 var mass: CGFloat = 0.55
 var multiplier: CGFloat = 1
 var maxV: CGFloat = 500
+let minV: CGFloat = 200
 var numberOfBlocks: Int = 3
 var paddle: SKSpriteNode!
 var paddleWidth: CGFloat = 200
 var ppl: Int = 1
 var gameOver = false
+var repeatY: Int = 0
+var repeatX: Int = 0
 
 
 var backgroundMusicPlayer: AVAudioPlayer!
@@ -102,7 +107,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         borderBody.categoryBitMask = BorderCategory
-        ball.physicsBody!.contactTestBitMask = BottomCategory | BlockCategory | PaddleCategory |  BorderCategory
+        ball.physicsBody!.contactTestBitMask = BottomCategory | BlockCategory | PaddleCategory |  BorderCategory | BlockCategoryRed
         
         println(ball.anchorPoint)
         
@@ -125,7 +130,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // 3. Create the blocks and add them to the scene
         for i in 0..<numberOfBlocks + 1{
             let block = SKSpriteNode(imageNamed: "brick1.png")
-            block.position = CGPointMake(xOffset + CGFloat(CGFloat(i))*blockWidth + CGFloat(i-1)*padding, CGRectGetHeight(frame) * 0.8)
+            block.position = CGPointMake(xOffset + CGFloat(CGFloat(i))*blockWidth + CGFloat(i-1)*padding, CGRectGetHeight(frame) - 50)
             block.physicsBody = SKPhysicsBody(rectangleOfSize: block.frame.size)
             block.physicsBody!.allowsRotation = false
             block.physicsBody!.friction = 0.0
@@ -138,7 +143,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for i in 0..<numberOfBlocks {
             
             let block1 = SKSpriteNode(imageNamed: "brick1.png")
-            block1.position = CGPointMake(xOffset + CGFloat(CGFloat(i))*blockWidth + CGFloat(i-1)*padding + blockWidth * 0.5, CGRectGetHeight(frame) * 0.8 + yOffset)
+            block1.position = CGPointMake(xOffset + CGFloat(CGFloat(i))*blockWidth + CGFloat(i-1)*padding + blockWidth * 0.5, CGRectGetHeight(frame) - 50 - yOffset)
             block1.physicsBody = SKPhysicsBody(rectangleOfSize: block1.frame.size)
             block1.physicsBody!.allowsRotation = false
             block1.physicsBody!.friction = 0.0
@@ -148,6 +153,96 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             block1.physicsBody!.dynamic = false
             addChild(block1)
         }
+        
+        if level >= 3 {
+            
+            for i in 0..<numberOfBlocks + 2 {
+                
+                let block1 = SKSpriteNode(imageNamed: "brick1.png")
+                block1.position = CGPointMake(xOffset + CGFloat(CGFloat(i))*blockWidth + CGFloat(i-1)*padding + blockWidth * 0.5, CGRectGetHeight(frame) - 50 - (yOffset * 2))
+                block1.physicsBody = SKPhysicsBody(rectangleOfSize: block1.frame.size)
+                block1.physicsBody!.allowsRotation = false
+                block1.physicsBody!.friction = 0.0
+                block1.physicsBody!.affectedByGravity = false
+                block1.name = BlockCategoryName
+                block1.physicsBody!.categoryBitMask = BlockCategory
+                block1.physicsBody!.dynamic = false
+                addChild(block1)
+            
+        }
+        
+        
+    }
+        if level >= 2 {
+            
+            for i in 0...level {
+                
+                let block1 = SKSpriteNode(imageNamed: "brick1.png")
+                block1.position = CGPointMake(xOffset + CGFloat(CGFloat(i))*blockWidth + CGFloat(i-1)*padding + blockWidth * 0.5, CGRectGetHeight(frame) - 50 - (yOffset * 3))
+                block1.physicsBody = SKPhysicsBody(rectangleOfSize: block1.frame.size)
+                block1.physicsBody!.allowsRotation = false
+                block1.physicsBody!.friction = 0.0
+                block1.physicsBody!.affectedByGravity = false
+                block1.name = BlockCategoryName
+                block1.physicsBody!.categoryBitMask = BlockCategory
+                block1.physicsBody!.dynamic = false
+                addChild(block1)
+                
+            }
+            
+            for i in level..<numberOfBlocks + 1 {
+                
+                let block1 = SKSpriteNode(imageNamed: "brick1.png")
+                block1.position = CGPointMake(xOffset + CGFloat(CGFloat(i))*blockWidth + CGFloat(i-1)*padding + blockWidth * 0.5, CGRectGetHeight(frame) - 50 - (yOffset * 3))
+                block1.physicsBody = SKPhysicsBody(rectangleOfSize: block1.frame.size)
+                block1.physicsBody!.allowsRotation = false
+                block1.physicsBody!.friction = 0.0
+                block1.physicsBody!.affectedByGravity = false
+                block1.name = BlockCategoryName
+                block1.physicsBody!.categoryBitMask = BlockCategory
+                block1.physicsBody!.dynamic = false
+                addChild(block1)
+                
+            }
+            
+            
+                
+                let block1 = SKSpriteNode(imageNamed: "brick2.png")
+                block1.position = CGPointMake(xOffset + CGFloat(CGFloat(level))*blockWidth + CGFloat(level-1)*padding + blockWidth * 0.5, CGRectGetHeight(frame) - 50 - (yOffset * 3))
+           
+                block1.physicsBody = SKPhysicsBody(rectangleOfSize: block1.frame.size)
+                block1.physicsBody!.allowsRotation = false
+                block1.physicsBody!.friction = 0.0
+                block1.physicsBody!.affectedByGravity = false
+                block1.name = BlockCategoryRedName
+                block1.physicsBody!.categoryBitMask = BlockCategoryRed
+                block1.physicsBody!.dynamic = false
+                addChild(block1)
+        
+        
+            if level >= 1 {
+                
+                for i in 0...level {
+                    
+                    let block1 = SKSpriteNode(imageNamed: "brick2.png")
+                    block1.position = CGPointMake(xOffset + CGFloat(CGFloat(level)*blockWidth) + 100 + blockWidth * 0.5, CGRectGetHeight(frame) - 50 - (yOffset * 5))
+                    
+                    block1.physicsBody = SKPhysicsBody(rectangleOfSize: block1.frame.size)
+                    block1.physicsBody!.allowsRotation = false
+                    block1.physicsBody!.friction = 0.0
+                    block1.physicsBody!.affectedByGravity = false
+                    block1.name = BlockCategoryRedName
+                    block1.physicsBody!.categoryBitMask = BlockCategoryRed
+                    block1.physicsBody!.dynamic = false
+                    addChild(block1)
+                    
+                }
+        
+        
+        }
+        
+        }
+        
         
         
     }
@@ -210,6 +305,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if firstBody.categoryBitMask == BallCategory && secondBody.categoryBitMask == BottomCategory {
             //TODO: Replace the log statement with display of Game Over Scene
             println("hit bottom")
+            saveHighScore()
             gameOver = true
              score = 0
              maxV = 500
@@ -217,7 +313,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             numberOfBlocks = 3
             levelLabel.text = ("Level: \(level)")
             ppl = 1
-            saveHighScore()
+            
              self.removeAllChildren();
             if let mainView = view {
                
@@ -294,17 +390,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         firstBody.applyImpulse(CGVector(dx: dx + 5, dy: -1))
                     }
                 }
+            
             if currentVector.dy == 0 { // bouncing left and right
                 
+                repeatY++
+                if repeatY == 2 {  // we want to make sure we don't adjust on the first 90 degree hit
                 let dy = currentVector.dy
                 let dx = currentVector.dx
                 println("DX is : \(dx)")
-                if ball.position.y < 300 { // if ball is in bottom half of the screen
+                if ball.position.y < 150 { // if ball is in bottom half of the screen
                 println("Applying impulse with dy = \(dy) + 20")
                 firstBody.applyImpulse(CGVector(dx: 0, dy: 20))
                 } else { // if ball is in the top half of the screen
                     println("Applying impulse with dy = \(dy) -25")
                     firstBody.applyImpulse(CGVector(dx: 0, dy: -25))
+                    repeatY = 0
+                }
                 }
             }
             
@@ -350,6 +451,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.text = ("Score: \(score)")
         
         let maxSpeed: CGFloat = maxV
+        
         let speed = sqrt(ball.physicsBody!.velocity.dx * ball.physicsBody!.velocity.dx + ball.physicsBody!.velocity.dy * ball.physicsBody!.velocity.dy)
         
         if speed > maxSpeed {
@@ -357,6 +459,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         else {
             ball.physicsBody!.linearDamping = 0.0
+            
+        }
+        
+        if speed < minV {
+            
+            let currentVector = ball.physicsBody!.velocity
+            let dy = currentVector.dy
+            let dx = currentVector.dx
+            ball.physicsBody!.applyImpulse(CGVector(dx: dx * 2, dy: dy * 2))
             
         }
     }
@@ -473,22 +584,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func loadHighScore() {
         
         if let savedHighScore = loadTextFromPath(scoreSavePath) {
-        highScoreLabel.text = savedHighScore
+        highScoreLabel.text = ("High Score: \(savedHighScore)")
             println("\(savedHighScore)")
         }
         
     }
     
     func saveHighScore() {
-       
-        let currentScore = scoreLabel.text
+       println("Trying to save current High Score of: \(score)")
+//        let currentScore = scoreLabel.text
         if let savedHighScore = loadTextFromPath(scoreSavePath) {
-            if currentScore > savedHighScore {
-        saveText(scoreLabel.text, path: scoreSavePath )
+            if score > savedHighScore.toInt()  {
+                println("Our score of: \(score) is bigger than the saved HS of: \(savedHighScore)")
+        saveText("\(score)", path: scoreSavePath )
             }
         } else {
             
-            saveText(scoreLabel.text, path: scoreSavePath )
+            saveText("\(score)", path: scoreSavePath )
         }
     }
 }

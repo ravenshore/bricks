@@ -46,6 +46,8 @@
 		50DBB3551A6C564E005E9AED /* paddleN4.png in Resources */ = {isa = PBXBuildFile; fileRef = 50DBB34A1A6C564E005E9AED /* paddleN4.png */; };
 		50DBB3561A6C564E005E9AED /* paddleN5.png in Resources */ = {isa = PBXBuildFile; fileRef = 50DBB34B1A6C564E005E9AED /* paddleN5.png */; };
 		50DBB3571A6C564E005E9AED /* paddleN6.png in Resources */ = {isa = PBXBuildFile; fileRef = 50DBB34C1A6C564E005E9AED /* paddleN6.png */; };
+		50DBB35A1A6DF089005E9AED /* brick2.png in Resources */ = {isa = PBXBuildFile; fileRef = 50DBB3581A6DF089005E9AED /* brick2.png */; };
+		50DBB35B1A6DF089005E9AED /* fragment2.png in Resources */ = {isa = PBXBuildFile; fileRef = 50DBB3591A6DF089005E9AED /* fragment2.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,6 +104,8 @@
 		50DBB34A1A6C564E005E9AED /* paddleN4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = paddleN4.png; sourceTree = "<group>"; };
 		50DBB34B1A6C564E005E9AED /* paddleN5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = paddleN5.png; sourceTree = "<group>"; };
 		50DBB34C1A6C564E005E9AED /* paddleN6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = paddleN6.png; sourceTree = "<group>"; };
+		50DBB3581A6DF089005E9AED /* brick2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brick2.png; sourceTree = "<group>"; };
+		50DBB3591A6DF089005E9AED /* fragment2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fragment2.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +166,8 @@
 				50DBB3491A6C564E005E9AED /* paddleN3.png */,
 				50DBB34A1A6C564E005E9AED /* paddleN4.png */,
 				50DBB34B1A6C564E005E9AED /* paddleN5.png */,
+				50DBB3581A6DF089005E9AED /* brick2.png */,
+				50DBB3591A6DF089005E9AED /* fragment2.png */,
 				50DBB34C1A6C564E005E9AED /* paddleN6.png */,
 				50051D481A69DB33005C2189 /* spark.sks */,
 				50051D4A1A69DD36005C2189 /* jump.wav */,
@@ -311,6 +317,7 @@
 				50056B151A660D15006CE8DC /* Images.xcassets in Resources */,
 				50D7C6A11A69D6E700D65A81 /* ball3.png in Resources */,
 				50DBB34F1A6C564E005E9AED /* bg4.png in Resources */,
+				50DBB35B1A6DF089005E9AED /* fragment2.png in Resources */,
 				50056B0C1A660D15006CE8DC /* GameScene.sks in Resources */,
 				50DBB3531A6C564E005E9AED /* paddleN2.png in Resources */,
 				50DBB3411A6C4B17005E9AED /* bg1.png in Resources */,
@@ -319,6 +326,7 @@
 				50DBB3541A6C564E005E9AED /* paddleN3.png in Resources */,
 				50056B131A660D15006CE8DC /* Main.storyboard in Resources */,
 				5078671F1A6743DF009A6DD9 /* ball2.png in Resources */,
+				50DBB35A1A6DF089005E9AED /* brick2.png in Resources */,
 				50D7C69F1A69CAC900D65A81 /* brick1.png in Resources */,
 				50056B381A6620D0006CE8DC /* GameOverScene.sks in Resources */,
 				50DBB3521A6C564E005E9AED /* bg6.png in Resources */,
